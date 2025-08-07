@@ -1,6 +1,7 @@
-const UserModel = require("/Programs/Projects/Hotel_Management/Backend/Models/Manager.js");
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const UserModel = require('../Models/Manager');
+const { hash, compare } = require('bcrypt');
+const sign = require('jsonwebtoken');
+
 
 const signup = async (req,res)=>{
     try{
@@ -13,7 +14,7 @@ const signup = async (req,res)=>{
         });
         }
         const userModel = new UserModel({name,email,password});
-        userModel.password = await bcrypt.hash(password,10);
+        userModel.password = await hash(password,10);
         await userModel.save();
         res.status(201).json({
             message: "Signup Successful",
@@ -38,7 +39,7 @@ const login = async (req,res)=>{
         });
         }
         
-        const isPasswordEqual = await bcrypt.compare(password,user.password)
+        const isPasswordEqual = await compare(password,user.password)
         if(!isPasswordEqual){
             return res.status(403).json({
             message: "Auth email or password is worng",
@@ -46,7 +47,7 @@ const login = async (req,res)=>{
         });
         }
 
-        const jwtToken = jwt.sign(
+        const jwtToken = sign(
             {email:user.email,_id : user._id},
             "SECRET-123",
             {expiresIn:'24h'}
@@ -67,7 +68,7 @@ const login = async (req,res)=>{
 }
 
 
-module.exports={
-    signup,
-    login
+module.exports = {
+  signup,
+  login
 }
