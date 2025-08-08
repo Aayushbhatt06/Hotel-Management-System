@@ -1,4 +1,4 @@
-const restaurantModel = require("/Programs/Projects/Hotel_Management/Backend/Models/Restaurant.js");
+const restaurantModel = require("../Models/Restaurant.js");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
