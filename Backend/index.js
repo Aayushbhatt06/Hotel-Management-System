@@ -6,14 +6,19 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const AuthRouter = require('./Routes/AuthRouter')
 const ApiRouter = require('./Routes/ApiRouter')
+const QRRouter = require('./Routes/QRRouter');
+
+app.use(express.json());
+app.use(bodyParser.json());
+app.use(cors())
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
-app.use(bodyParser.json());
-app.use(cors())
+
 app.use('/auth', AuthRouter);
 app.use("/api", ApiRouter);
+app.use('/qr', QRRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
