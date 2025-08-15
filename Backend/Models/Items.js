@@ -26,8 +26,12 @@ const itemsSchema = new Schema({
     type: String,
     enum: ["sweet", "beverage", "starter", "main-course", "dessert"], // expand as needed
     required: true
+    },
+    restaurantId :{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Restaurant",
+        required: true
     }
-
 });
 
 const itemsModel = mongoose.model("Items",itemsSchema);

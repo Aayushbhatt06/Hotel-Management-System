@@ -2,8 +2,8 @@ const itemsModel = require('../Models/Items');
 
 const addItem = async(req,res)=>{
     try {
-        const {name,image,price,quantity,desc,category} = req.body;
-
+        const {name,image,price,quantity,desc,category, resId} = req.body;
+        
         if (!name || !price || !category) {
             return res.status(400).json({
                 message: "Name, Price, and Category are required.",
@@ -11,15 +11,18 @@ const addItem = async(req,res)=>{
             });
         }
 
-        const item = await itemsModel.findOne({name});
+        const item = await itemsModel.findOne({
+            name: name,
+            restaurantId: resId
+        });
         if(item){
             return res.status(409).json({ 
-                message: "Item already exists",
+                message: "Item already exist",
                 success:false
             });
         }
 
-        const newItem = new itemsModel({name,image,price,quantity,desc,category});
+        const newItem = new itemsModel({name,image,price,quantity,desc,category,restaurantId: resId});
         await newItem.save();
 
         return res.status(201).json({
@@ -30,14 +33,17 @@ const addItem = async(req,res)=>{
     } catch (error) {
         console.error(error);
         return res.status(500).json({
-            message: "Server error",
+            message: error.message,
             success: false
         });
     }
 };
 const getItems = async(req, res) => {
     try{
-        const items = await itemsModel.find({});
+        const {resId} = req.params;
+        const items = await itemsModel.find({
+            restaurantId: resId
+        });
         if(!items) {
             return res.status(404).json({
                 message: "No items found"
@@ -58,8 +64,13 @@ const getItems = async(req, res) => {
 
 const getItem = async(req, res) => {
     try{
-        const {id} = req.params;
-        const item = await itemsModel.findById(id);
+        const {resId, id} = req.params;
+        const item = await itemsModel.findOne(
+            {
+                _id: id,
+                restaurantId: resId
+            }
+        );
         
         if(!item) {
             return res.status(404).json({

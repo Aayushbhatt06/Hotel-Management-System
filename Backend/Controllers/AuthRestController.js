@@ -1,4 +1,4 @@
-const restaurantModel = require("/Programs/Projects/Hotel_Management/Backend/Models/Restaurant.js");
+const restaurantModel = require("../Models/Restaurant");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -66,8 +66,24 @@ const login = async (req,res)=>{
     }
 }
 
+const getAllSignups = async(req, res) => {
+    try{
+        const getSignups = await restaurantModel.find({});
+        res.status(200).json({
+            message: "fetched success",
+            data: getSignups
+        })
+    }catch(err) {
+        res.status(500).json({
+            message: err.message,
+            success:false
+        });
+    }
+}
+
 
 module.exports={
     signup,
-    login
+    login,
+    getAllSignups
 }
