@@ -2,8 +2,8 @@ const itemsModel = require('../Models/Items');
 
 const addItem = async(req,res)=>{
     try {
-        const {name,image,price,quantity,desc,category, resId} = req.body;
-        
+        const {name,image,price,quantity,desc,category} = req.body;
+        const resId = req.rest._id;
         if (!name || !price || !category) {
             return res.status(400).json({
                 message: "Name, Price, and Category are required.",
