@@ -12,7 +12,10 @@ const QRRouter = require('./Routes/QRRouter');
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173",  // allow only your frontend
+  credentials: true                 // allow cookies/auth headers
+}));
 
 app.get('/', (req, res) => {
   res.send('Hello World!')

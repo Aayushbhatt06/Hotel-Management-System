@@ -24,7 +24,7 @@ const signupValidation = (req,res,next)=>{
 const LoginValidation = (req, res, next) => {
     const Schema = joi.object({
         email: joi.string().email().required(),
-        password: joi.string().min(4).max(100).required()
+        password: joi.string().min(8).max(100).required()
     });
 
     const { error } = Schema.validate(req.body);
