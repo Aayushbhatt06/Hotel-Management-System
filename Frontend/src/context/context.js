@@ -6,3 +6,17 @@ export const contactContext = createContext(0)
 export const addressContext = createContext("")
 export const tablesContext = createContext(0)
 export const idContext = createContext("")
+
+
+export const signupContext = createContext({
+  signup: {
+    name: "",
+    email: "",
+    password: "",
+    contact: "",
+    address: "",
+    tables: "",
+  },
+  setSignup: () => {},
+});
+
