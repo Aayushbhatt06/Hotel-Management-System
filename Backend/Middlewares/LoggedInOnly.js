@@ -28,7 +28,7 @@ const LoggedInOnly = (req, res, next) => {
 
             // ✅ append decoded data without losing original req.body
             req.rest = decoded;
-            console.log(req.rest);
+            // console.log(req.rest);
 
             next();
         });
