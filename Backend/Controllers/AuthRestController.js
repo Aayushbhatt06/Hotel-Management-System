@@ -29,7 +29,7 @@ const signup = async (req,res)=>{
         });
     }
 }
-
+    
 const login = async (req,res)=>{
     try{
         const {email , password} = req.body;
@@ -50,7 +50,7 @@ const login = async (req,res)=>{
         }
 
         const jwtToken = jwt.sign(
-            {email:rest.email,_id : rest._id},
+            {name : rest.name,email:rest.email,contact:rest.contact,address:rest.address,tables: rest.tables,_id : rest._id},
             process.env.SECRET,
             {expiresIn:'24h'}
         )
@@ -74,7 +74,8 @@ const getAllSignups = async(req, res) => {
         const getSignups = await restaurantModel.find({});
         res.status(200).json({
             message: "fetched success",
-            data: getSignups
+            data: getSignups,
+            success:true
         })
     }catch(err) {
         res.status(500).json({

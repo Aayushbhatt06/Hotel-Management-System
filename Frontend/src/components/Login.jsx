@@ -26,10 +26,9 @@ const Login = () => {
       body: JSON.stringify(formData),
     });
 
-    const data = await res.json(); // ✅ parse JSON first
+    const data = await res.json();
 
     if (!res.ok || !data.success) {
-      // ✅ priority: error > message > fallback
       const errorMsg =
         data.error || data.message || "Invalid credentials, please try again.";
       alert(errorMsg);
