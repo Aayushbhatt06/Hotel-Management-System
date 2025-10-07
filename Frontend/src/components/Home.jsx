@@ -7,14 +7,14 @@ import {
   tablesContext, 
   idContext 
 } from "../context/context";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const handleClick = () => {
     console.log(localStorage.getItem("token"));
     localStorage.removeItem("token");
+    Window.location.reload()
   };
-
-  // consume all contexts
   const name = useContext(nameContext);
   const email = useContext(emailContext);
   const contact = useContext(contactContext);
@@ -29,12 +29,12 @@ const Home = () => {
         <h1 className="text-3xl font-bold text-white">
           Welcome to {name || "Our Restaurant"}
         </h1>
-        <button 
+        <Link to="/login"><button 
           className="bg-white text-orange-600 font-semibold px-4 py-2 rounded-lg shadow-md hover:bg-orange-100 transition"
           onClick={handleClick}
         >
           Log Out
-        </button>
+        </button></Link>
       </header>
 
       {/* Restaurant Details */}

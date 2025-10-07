@@ -18,7 +18,7 @@ function App() {
         />
         <Route path="/login" element={<Login />} />
         <Route path="/signup/*" element={<SignupFlow />} />
-
+        
         <Route
           path="/home"
           element={
