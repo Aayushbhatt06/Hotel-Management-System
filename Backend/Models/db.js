@@ -1,7 +1,13 @@
 const mongoose = require('mongoose');
-main().catch(err => console.log(err));
-const mongo_url = process.env.MONGO_CONN;
+require("dotenv").config();
+
 async function main() {
-  await mongoose.connect("mongodb://localhost:27017/Hotel-Management")
-  .then(console.log("Connected to Mongo db"))
+  try {
+    await mongoose.connect(process.env.MONGOSTR);
+    console.log("Connected to Mongo db");
+  } catch (err) {
+    console.error("Mongo connection error:", err);
+  }
 }
+
+main();

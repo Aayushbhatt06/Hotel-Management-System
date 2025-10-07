@@ -11,6 +11,7 @@ const signupValidation = (req,res,next)=>{
     })
     const {error} = schema.validate(req.body);
     if(error){
+        console.log(error);
         return res.status(400).json({
             message:"Bad request",
             error: error.details[0].message
@@ -23,7 +24,7 @@ const signupValidation = (req,res,next)=>{
 const LoginValidation = (req, res, next) => {
     const Schema = joi.object({
         email: joi.string().email().required(),
-        password: joi.string().min(4).max(100).required()
+        password: joi.string().min(8).max(100).required()
     });
 
     const { error } = Schema.validate(req.body);

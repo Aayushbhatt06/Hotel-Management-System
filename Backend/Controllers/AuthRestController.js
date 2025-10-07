@@ -1,14 +1,16 @@
 const restaurantModel = require("../Models/Restaurant");
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
 const signup = async (req,res)=>{
     try{
         const {name , email, contact, address, tables , password} = req.body;
-        const user = await restaurantModel.findOne({email})
-        if(user){
+        const rest = await restaurantModel.findOne({email})
+        if(rest){
+            console.log("rest already exist");
             return res.status(409).json({
-            message: "User Already Exists, Please Login",
+            message: "restaurant Already Exists, Please Login",
             success:false
         });
         }
@@ -20,6 +22,7 @@ const signup = async (req,res)=>{
             success:true
         });
     }catch(err){
+        console.log(err);
         res.status(500).json({
             message: err.message,
             success:false
@@ -30,15 +33,15 @@ const signup = async (req,res)=>{
 const login = async (req,res)=>{
     try{
         const {email , password} = req.body;
-        const user = await restaurantModel.findOne({email})
-        if(!user){
+        const rest = await restaurantModel.findOne({email})
+        if(!rest){
             return res.status(403).json({
             message: "Auth email or password is worng",
             success:false
         });
         }
         
-        const isPasswordEqual = await bcrypt.compare(password,user.password)
+        const isPasswordEqual = await bcrypt.compare(password,rest.password)
         if(!isPasswordEqual){
             return res.status(403).json({
             message: "Auth email or password is worng",
@@ -47,8 +50,8 @@ const login = async (req,res)=>{
         }
 
         const jwtToken = jwt.sign(
-            {email:user.email,_id : user._id},
-            "SECRET-123",
+            {email:rest.email,_id : rest._id},
+            process.env.SECRET,
             {expiresIn:'24h'}
         )
         res.status(200).json({
@@ -56,7 +59,7 @@ const login = async (req,res)=>{
             success:true,
             jwtToken,
             email,
-            name:user.name
+            name:rest.name
         });
     }catch(err){
         res.status(500).json({

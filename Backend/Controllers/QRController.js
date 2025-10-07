@@ -1,7 +1,7 @@
 const QRCodeLib = require('qrcode');
 const QRModel = require('../Models/QRCode');
 
-// ✅ Generate and store multiple QRs
+// ✅ Generate and store multiple QRs dynamically
 const generateMultipleQRCodes = async (req, res) => {
   try {
     const { restaurantId, tableCount } = req.body;
@@ -14,16 +14,16 @@ const generateMultipleQRCodes = async (req, res) => {
 
     for (let i = 1; i <= tableCount; i++) {
       const qrData = `https://yourapp.com/restaurant/${restaurantId}/table/${i}`;
-      const qrImage = await QRCodeLib.toDataURL(qrData);
+      const qrBuffer = await QRCodeLib.toBuffer(qrData);
 
       const newQR = new QRModel({
         restaurantId,
         tableNumber: i,
-        qrCodeUrl: qrImage
+        qrCodeUrl: `data:image/png;base64,${qrBuffer.toString('base64')}`
       });
 
       await newQR.save();
-      qrList.push({ tableNumber: i, qrImage });
+      qrList.push({ tableNumber: i, qrCodeUrl: newQR.qrCodeUrl });
     }
 
     res.status(201).json({ message: "QRs generated and saved", qrList });
@@ -32,29 +32,41 @@ const generateMultipleQRCodes = async (req, res) => {
   }
 };
 
-// ✅ Generate single QR (no save)
+// ✅ Generate single QR and return as PNG
 const generateQR = async (req, res) => {
   try {
     const { restaurantId, tableNumber } = req.body;
-    const qrData = `https://yourapp.com/restaurant/${restaurantId}/table/${tableNumber}`;
-    const qrImage = await QRCodeLib.toDataURL(qrData);
 
-    res.status(200).json({ success: true, qrImage });
+    if (!restaurantId || !tableNumber) {
+      return res.status(400).json({ error: "restaurantId and tableNumber are required" });
+    }
+
+    const qrData = `https://yourapp.com/restaurant/${restaurantId}/table/${tableNumber}`;
+    const qrBuffer = await QRCodeLib.toBuffer(qrData);
+
+    res.setHeader('Content-Type', 'image/png');
+    res.send(qrBuffer);
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to generate QR', error: err.message });
+    res.status(500).json({ error: "Failed to generate QR", details: err.message });
   }
 };
 
-// ✅ Fetch QR dynamically (no DB hit)
+// ✅ Fetch QR dynamically from params and return as PNG
 const fetchQR = async (req, res) => {
   try {
     const { restaurantId, tableNumber } = req.params;
-    const qrData = `https://yourapp.com/restaurant/${restaurantId}/table/${tableNumber}`;
-    const qrImage = await QRCodeLib.toDataURL(qrData);
 
-    res.status(200).json({ success: true, qrImage });
+    if (!restaurantId || !tableNumber) {
+      return res.status(400).json({ error: "restaurantId and tableNumber are required" });
+    }
+
+    const qrData = `https://yourapp.com/restaurant/${restaurantId}/table/${tableNumber}`;
+    const qrBuffer = await QRCodeLib.toBuffer(qrData);
+
+    res.setHeader('Content-Type', 'image/png');
+    res.send(qrBuffer);
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Failed to fetch QR', error: err.message });
+    res.status(500).json({ error: "Failed to fetch QR", details: err.message });
   }
 };
 

@@ -1,13 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {
-  generateMultipleQRCodes,
-  generateQR,
-  fetchQR,
-} = require("../Controllers/QRController");
+const QRController = require('../Controllers/QRController');
 
-router.post("/generate-multiple", generateMultipleQRCodes);
-router.post("/generate", generateQR);
-router.get("/:restaurantId/:tableNumber", fetchQR);
+// POST - Generate and save multiple QRs
+router.post('/generate-multiple', QRController.generateMultipleQRCodes);
+
+// POST - Generate a single QR (returns PNG)
+router.post('/generate', QRController.generateQR);
+
+// GET - Fetch a QR dynamically (direct image)
+router.get('/:restaurantId/:tableNumber', QRController.fetchQR);
 
 module.exports = router;

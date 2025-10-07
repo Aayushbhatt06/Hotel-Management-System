@@ -14,6 +14,10 @@ const qrCodeSchema = new Schema({
     qrCodeUrl: {
         type: String,
         required: true
+    },
+    reserved: {
+        type: Boolean,
+        default: false
     }
 });
 

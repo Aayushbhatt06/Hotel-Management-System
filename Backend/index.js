@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
-const port = 4000
+require('dotenv').config()
+const port = process.env.PORT;
 require('./Models/db')
+const QRCode = require('qrcode');
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const AuthRouter = require('./Routes/AuthRouter')
@@ -10,11 +12,24 @@ const QRRouter = require('./Routes/QRRouter');
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors())
+app.use(cors({
+  origin: "http://localhost:5173",  // allow only your frontend
+  credentials: true                 // allow cookies/auth headers
+}));
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+app.get('/qr', async (req, res) => {
+  try {
+    const buffer = await QRCode.toBuffer('https://example.com');
+    res.setHeader('Content-Type', 'image/png');
+    res.send(buffer);
+  } catch (err) {
+    res.status(500).send('Error generating QR');
+  }
+});
+
 
 app.use('/auth', AuthRouter);
 app.use("/api", ApiRouter);
